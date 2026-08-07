@@ -1,0 +1,40 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: customer_mgmt
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d customer_mgmt"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/customer_mgmt?schema=public
+      JWT_SECRET: change-me-in-production-use-a-long-random-string
+      JWT_EXPIRES_IN: 7d
+      PORT: 3001
+      CRM_BASE_DOMAIN: crm.dabriz.com
+      CRM_PROTOCOL: https
+      ADMIN_EMAIL: admin@dabriz.com
+      ADMIN_PASSWORD: Admin123!
+      CORS_ORIGIN: http://localhost:3000
+      RUN_SEED: "true"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
