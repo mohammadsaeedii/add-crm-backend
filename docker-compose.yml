@@ -17,11 +17,11 @@ services:
       retries: 10
 
   api:
-      build: .
-      restart: unless-stopped
-      ports:
-        - "3001:3001"
-      environment:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
       DATABASE_URL: postgresql://postgres:postgres@postgres:5432/customer_mgmt?schema=public
       JWT_SECRET: change-me-in-production-use-a-long-random-string
       JWT_EXPIRES_IN: 7d
@@ -32,10 +32,12 @@ services:
       ADMIN_PASSWORD: Admin123!
       CORS_ORIGIN: https://customers-front.dabriz.com
       RUN_SEED: "true"
-      depends_on:
+
+    depends_on:
       postgres:
         condition: service_healthy
-      labels:
+
+    labels:
       - coolify.managed=true
       - coolify.http.domain=customer-backend.dabriz.com
 
