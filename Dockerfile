@@ -17,9 +17,13 @@ RUN apt-get update -y \
   && rm -rf /var/lib/apt/lists/*
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+# Avoid stale incremental builds if a tsbuildinfo ever gets into the context
+RUN rm -f tsconfig.build.tsbuildinfo tsconfig.tsbuildinfo
 # prisma.config.ts reads DATABASE_URL; generate does not connect to the DB
 ENV DATABASE_URL="postgresql://postgres:postgres@localhost:5432/postgres?schema=public"
-RUN npm run build
+RUN npm run build \
+  && test -f dist/main.js \
+  && test -f dist/generated/prisma/client.js
 RUN npm prune --omit=dev
 
 FROM node:22-bookworm-slim AS runner

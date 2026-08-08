@@ -1,7 +1,8 @@
 import 'dotenv/config';
 import * as bcrypt from 'bcrypt';
 import { PrismaPg } from '@prisma/adapter-pg';
-import { PrismaClient } from '../src/generated/prisma/client';
+// Production image only ships compiled client under dist/ (see Dockerfile).
+import { PrismaClient } from '../dist/generated/prisma/client.js';
 
 async function main() {
   const adapter = new PrismaPg({

@@ -22,7 +22,7 @@
     "prisma:migrate": "prisma migrate dev",
     "prisma:migrate:deploy": "prisma migrate deploy",
     "prisma:seed": "node prisma/seed.js",
-    "db:setup": "prisma migrate deploy && node prisma/seed.js"
+    "db:setup": "prisma migrate deploy && npm run build && node prisma/seed.js"
   },
   "prisma": {
     "seed": "node prisma/seed.js"

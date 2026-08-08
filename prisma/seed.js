@@ -36,7 +36,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 require("dotenv/config");
 const bcrypt = __importStar(require("bcrypt"));
 const adapter_pg_1 = require("@prisma/adapter-pg");
-const client_1 = require("../src/generated/prisma/client");
+const client_1 = require("../dist/generated/prisma/client.js");
 async function main() {
     const adapter = new adapter_pg_1.PrismaPg({
         connectionString: process.env.DATABASE_URL,
@@ -57,4 +57,3 @@ main().catch(async (error) => {
     console.error(error);
     process.exit(1);
 });
-//# sourceMappingURL=seed.js.map
