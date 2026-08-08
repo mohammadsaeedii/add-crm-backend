@@ -7,6 +7,7 @@ import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
 import { Prisma } from '../generated/prisma/client.js';
 import { PrismaService } from '../prisma/prisma.service.js';
+import { CrmProvisioningService } from './crm-provisioning.service.js';
 import { CreateCustomerDto } from './dto/create-customer.dto.js';
 import { UpdateCustomerDto } from './dto/update-customer.dto.js';
 
@@ -18,6 +19,7 @@ export class CustomersService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly config: ConfigService,
+    private readonly crmProvisioning: CrmProvisioningService,
   ) {
     this.crmBaseDomain = this.config.get<string>(
       'CRM_BASE_DOMAIN',
@@ -107,6 +109,9 @@ export class CustomersService {
         },
       });
 
+      // Best-effort: CRM keeps its own Tenant row; failure does not roll back Customer
+      await this.crmProvisioning.provisionTenant(customer);
+
       return this.toResponse(customer);
     } catch (error) {
       if (
@@ -170,6 +175,10 @@ export class CustomersService {
         where: { id },
         data,
       });
+
+      if (dto.name !== undefined || dto.slug !== undefined) {
+        await this.crmProvisioning.provisionTenant(customer);
+      }
 
       return this.toResponse(customer);
     } catch (error) {

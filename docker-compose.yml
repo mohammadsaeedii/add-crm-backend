@@ -34,6 +34,14 @@ services:
       ADMIN_EMAIL: admin@dabriz.com
       ADMIN_PASSWORD: Admin123!
       CORS_ORIGIN: https://customers-front.dabriz.com
+      OAUTH_ISSUER: https://customers-backend.dabriz.com
+      OAUTH_TOKEN_SECRET: change-me-oauth-token-secret
+      SSO_FRONTEND_URL: https://customers-front.dabriz.com
+      OAUTH_CRM_CLIENT_ID: multi-tenant-crm
+      OAUTH_CRM_CLIENT_SECRET: crm-dev-client-secret-change-me
+      OAUTH_CRM_REDIRECT_URIS: https://api.crm.dabriz.com/auth/sso/callback
+      CRM_API_URL: https://api.crm.dabriz.com
+      CRM_PROVISIONING_SECRET: shared-provisioning-secret-change-me
       RUN_SEED: "true"
     depends_on:
       postgres:

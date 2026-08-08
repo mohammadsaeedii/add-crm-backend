@@ -15,8 +15,20 @@ async function bootstrap() {
     }),
   );
 
+  const corsOrigin = config.get<string>('CORS_ORIGIN', 'http://localhost:3000');
+  const allowedOrigins = corsOrigin.split(',').map((o) => o.trim()).filter(Boolean);
+
   app.enableCors({
-    origin: config.get<string>('CORS_ORIGIN', 'http://localhost:3000'),
+    origin: (
+      origin: string | undefined,
+      callback: (err: Error | null, allow?: boolean) => void,
+    ) => {
+      if (!origin || allowedOrigins.includes('*') || allowedOrigins.includes(origin)) {
+        callback(null, true);
+        return;
+      }
+      callback(new Error(`CORS blocked for origin: ${origin}`), false);
+    },
     credentials: true,
   });
 
